@@ -8,6 +8,7 @@ import IndicatorWeather from './components/IndicatorWeather';
 import TableWeather from './components/TableWeather';
 import ControlWeather from './components/ControlWeather';
 import LineChartWeather from './components/LineChartWeather';
+import { useEffect } from 'react';
 
 function App() {
   //const [count, setCount] = useState(0)

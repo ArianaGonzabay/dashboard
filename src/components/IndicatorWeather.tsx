@@ -11,6 +11,7 @@ interface Indicator {
 export default function IndicatorWeather(config: Indicator) {
     return (
         <Paper
+            //Objeto para configurar el estilo del componente
             sx={{
               p: 2,
               display: 'flex',

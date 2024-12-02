@@ -12,6 +12,7 @@ import IndicatorWeather from "./components/IndicatorWeather";
 import TableWeather from "./components/TableWeather";
 import ControlWeather from "./components/ControlWeather";
 import LineChartWeather from "./components/LineChartWeather";
+import Item from "./interface/Item";
 
 interface Indicator {
   title?: String;
@@ -24,6 +25,9 @@ function App() {
 
    {/* Variable de estado y función de actualización */}
    let [indicators, setIndicators] = useState<Indicator[]>([])
+
+   //Variable de estado y funcion de actualizacion para Item
+   let [items, setItems] = useState<Item[]>([])
 
   {/* Hook: useEffect */}
      useEffect(()=>{
@@ -42,6 +46,9 @@ function App() {
                {/* Arreglo para agregar los resultados */}
 
              let dataToIndicators : Indicator[] = new Array<Indicator>();
+
+             //ARRAY DEL TIPO ITEM
+             let dataToItems : Item[] = new Array<Item>();
 
              {/* 
                  Análisis, extracción y almacenamiento del contenido del XML 
@@ -62,9 +69,18 @@ function App() {
              let altitude = location.getAttribute("altitude") || ""
              dataToIndicators.push({ "title": "Location", "subtitle": "Altitude", "value": altitude })
 
+             //Analizando el XML y obteniendo la referencia
+             let times = xml.getElementsByTagName("time");
+             let from = time.getAttributes("from") || "";
+             let to = time.getAttributes("to") || "";
+             let precipitation = time.getAttributes("precipitation") || "";
+             let humidity = time.getAttributes("clouds") || "";
+
              //console.log( dataToIndicators )
              {/* Modificación de la variable de estado mediante la función de actualización */}
              setIndicators( dataToIndicators )
+
+             setItems(dataToItems)
 
          }
 
@@ -134,7 +150,7 @@ function App() {
           <ControlWeather />
         </Grid>
         <Grid size={{ xs: 12, xl: 9 }}>
-          <TableWeather />
+          <TableWeather itemsIn= { items }/>
         </Grid>
       </Grid>
 

@@ -7,6 +7,7 @@ import IndicatorWeather from './components/IndicatorWeather';
 import TableWeather from './components/TableWeather';
 import ControlWeather from './components/ControlWeather';
 import LineChartWeather from './components/LineChartWeather';
+import Item from './interface/Item';
 
 import { useEffect, useState } from 'react';
 interface Indicator {
@@ -21,6 +22,7 @@ function App() {
   {/* Variable de estado y función de actualización */ }
   let [indicators, setIndicators] = useState<Indicator[]>([])
   let [owm, setOWM] = useState(localStorage.getItem("openWeatherMap"))
+  let [items, setItems] = useState<Item[]>([])
 
   {/* Hook: useEffect */ }
   useEffect(() => {
@@ -70,6 +72,7 @@ function App() {
         {/* Arreglo para agregar los resultados */ }
 
         let dataToIndicators: Indicator[] = new Array<Indicator>();
+        let dataToItems: Item[] = new Array<Item>();
 
         {/* 
             Análisis, extracción y almacenamiento del contenido del XML 
@@ -89,6 +92,39 @@ function App() {
 
         let altitude = location.getAttribute("altitude") || ""
         dataToIndicators.push({ "title": "Location", "subtitle": "Altitude", "value": altitude })
+        
+        //Etiqueta time
+        let times = xml.getElementsByTagName("time");
+
+        for (let i=0; i<times.length; i++){
+          let time = times[i];
+
+          //Extracción de atributos
+          const dateStart = time.getAttribute("from")?.split("T")[1] || "";
+          const dateEnd = time.getAttribute("to")?.split("T")[1] || "";
+
+          const precipitation = time.getElementsByTagName("precipitation")[0];
+          const probability = precipitation?.getAttribute("probability") || "";
+
+          const humidity = time.getElementsByTagName("humidity")[0];
+          const value = humidity.getAttribute("value") || "";
+
+          const clouds = time.getElementsByTagName("clouds")[0];
+          const all = clouds.getAttribute("all") || "";
+
+          dataToItems.push({
+            dateStart,
+            dateEnd,
+            precipitation: probability,
+            humidity: value,
+            clouds: all
+          });
+        }
+
+        //6 primeros elementos
+        const firstSix = dataToItems.slice(0,6);
+        //actualizar
+        setItems(firstSix);
 
         // console.log( dataToIndicators )
 
@@ -119,7 +155,10 @@ function App() {
 
   }
 
+  {/* JSX */ }
+
   return (
+
     <Grid container spacing={5}>
 
       {/* Indicadores */}
@@ -145,7 +184,7 @@ function App() {
             <ControlWeather />
           </Grid>
           <Grid size={{ xs: 12, xl: 9 }}>
-            <TableWeather />
+            <TableWeather itemsIn={items}/>
           </Grid>
         </Grid>
       </Grid>

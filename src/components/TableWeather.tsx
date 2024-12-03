@@ -5,11 +5,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Item from "./interface/Item";
-
-interface MyProp {
-  itemsIn : Item[];
-}
 
 function createData(
   name: string,
@@ -32,7 +27,7 @@ const rows = [
 export default function BasicTable() {
   return (
     <TableContainer component={Paper}>
-      <Table aria-label="simple table">
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell>Dessert (100g serving)</TableCell>

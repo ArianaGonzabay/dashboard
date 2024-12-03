@@ -40,7 +40,9 @@ export default function ControlWeather() {
     };
 
     {/* Variable de estado y función de actualización */}
-    let [selected, setSelected] = useState(-1)
+    //let [selected, setSelected] = useState(-1)
+    const [, setSelected] = useState(-1);
+
        
     {/* JSX */}
     return (

@@ -1,6 +1,3 @@
-//import { useState } from 'react'
-//import reactLogo from './assets/react.svg'
-//import viteLogo from '/vite.svg'
 import Grid from '@mui/material/Grid2'
 import './App.css'
 import IndicatorWeather from './components/IndicatorWeather';
@@ -10,6 +7,7 @@ import LineChartWeather from './components/LineChartWeather';
 import Item from './interface/Item';
 
 import { useEffect, useState } from 'react';
+
 interface Indicator {
   title?: String;
   subtitle?: String;
@@ -17,67 +15,44 @@ interface Indicator {
 }
 
 function App() {
-  //const [count, setCount] = useState(0)
-
-  {/* Variable de estado y función de actualización */ }
+  let [city, setCity] = useState<string>("Guayaquil")
+  let [searchCity, setSearchCity] = useState<string>("Guayaquil")
   let [indicators, setIndicators] = useState<Indicator[]>([])
   let [owm, setOWM] = useState(localStorage.getItem("openWeatherMap"))
   let [items, setItems] = useState<Item[]>([])
+  let [selectedVariable, setSelectedVariable] = useState<string>("humidity");
+  let [isLoading, setIsLoading] = useState(false);
+  let [error, setError] = useState<string | null>(null);
 
   {/* Hook: useEffect */ }
   useEffect(() => {
+    let isMounted = true;
 
-    let request = async () => {
+    const fetchWeatherData = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // Limpia los datos anteriores
+        setIndicators([]);
+        setItems([]);
 
-      {/* Referencia a las claves del LocalStorage: openWeatherMap y expiringTime */ }
-      let savedTextXML = localStorage.getItem("openWeatherMap") || "";
-      let expiringTime = localStorage.getItem("expiringTime");
-
-      {/* Obtenga la estampa de tiempo actual */ }
-      let nowTime = (new Date()).getTime();
-
-      {/* Verifique si es que no existe la clave expiringTime o si la estampa de tiempo actual supera el tiempo de expiración */ }
-      if (expiringTime === null || nowTime > parseInt(expiringTime)) {
-
-        {/* Request */ }
         let API_KEY = "c545219142fde94975c406684e0add19"
-        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=Guayaquil&mode=xml&appid=${API_KEY}`)
-        savedTextXML = await response.text();
+        let response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${searchCity}&mode=xml&appid=${API_KEY}`)
+        
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} - Ciudad no encontrada`);
+        }
 
-        {/* Tiempo de expiración */ }
-        let hours = 0.01
-        let delay = hours * 3600000
-        let expiringTime = nowTime + delay
-
-        {/* En el LocalStorage, almacene el texto en la clave openWeatherMap, estampa actual y estampa de tiempo de expiración */ }
-        localStorage.setItem("openWeatherMap", savedTextXML)
-        localStorage.setItem("expiringTime", expiringTime.toString())
-        localStorage.setItem("nowTime", nowTime.toString())
-
-        {/* DateTime */ }
-        localStorage.setItem("expiringDateTime", new Date(expiringTime).toString())
-        localStorage.setItem("nowDateTime", new Date(nowTime).toString())
-
-        {/* Modificación de la variable de estado mediante la función de actualización */ }
-        setOWM(savedTextXML)
-      }
-
-      {/* Valide el procesamiento con el valor de savedTextXML */}
-      if( savedTextXML ) {
+        let savedTextXML = await response.text();
 
         {/* XML Parser */ }
         const parser = new DOMParser();
         const xml = parser.parseFromString(savedTextXML, "application/xml");
 
         {/* Arreglo para agregar los resultados */ }
-
-        let dataToIndicators: Indicator[] = new Array<Indicator>();
-        let dataToItems: Item[] = new Array<Item>();
-
-        {/* 
-            Análisis, extracción y almacenamiento del contenido del XML 
-            en el arreglo de resultados
-        */}
+        let dataToIndicators: Indicator[] = [];
+        let dataToItems: Item[] = [];
 
         let name = xml.getElementsByTagName("name")[0].innerHTML || ""
         dataToIndicators.push({ "title": "Location", "subtitle": "City", "value": name })
@@ -123,24 +98,45 @@ function App() {
 
         //6 primeros elementos
         const firstSix = dataToItems.slice(0,6);
-        //actualizar
-        setItems(firstSix);
-
-        // console.log( dataToIndicators )
-
-        {/* Modificación de la variable de estado mediante la función de actualización */ }
-        setIndicators(dataToIndicators)
-
-
+        
+        if (isMounted) {
+          setItems(firstSix);
+          setIndicators(dataToIndicators);
+          setCity(searchCity);
+        }
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+        setError(error instanceof Error ? error.message : "Error desconocido");
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     }
 
-    request();
+    // Solo hacer fetch si hay una ciudad para buscar
+    if (searchCity) {
+      fetchWeatherData();
+    }
 
-  }, [owm])
+    // Función de limpieza
+    return () => {
+      isMounted = false;
+    };
+
+  }, [searchCity])
+
+  //Cambiar ciudad con un input
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCity(event.target.value)
+  }
+
+  // Manejar búsqueda
+  const handleSearch = () => {
+    setSearchCity(city);
+  }
 
   let renderIndicators = () => {
-
     return indicators
       .map(
         (indicator, idx) => (
@@ -152,51 +148,67 @@ function App() {
           </Grid>
         )
       )
-
   }
 
   {/* JSX */ }
-
   return (
-
     <Grid container spacing={5}>
+      {/* Input para cambiar la ciudad */}
+      <Grid size={{ xs: 12, xl: 12 }} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <input
+          type="text"
+          value={city}
+          onChange={handleInputChange}
+          placeholder="Ingrese la ciudad"
+          style={{ flexGrow: 1, padding: '8px' }}
+        />
+        <button 
+          onClick={handleSearch} 
+          disabled={isLoading}
+          style={{ padding: '8px 16px' }}
+        >
+          {isLoading ? 'Buscando...' : 'Buscar'}
+        </button>
+      </Grid>
 
-      {/* Indicadores */}
-      {/* <Grid size={{ xs: 12, xl: 3 }}>
-        <IndicatorWeather title={'Indicator 1'} subtitle={'Unidad 1'} value={"1.23"} />
-      </Grid>
-      <Grid size={{ xs: 12, xl: 3 }}>
-        <IndicatorWeather title={'Indicator 2'} subtitle={'Unidad 2'} value={"3.12"} />
-      </Grid>
-      <Grid size={{ xs: 12, xl: 3 }}>
-        <IndicatorWeather title={'Indicator 3'} subtitle={'Unidad 3'} value={"2.31"} />
-      </Grid>
-      <Grid size={{ xs: 12, xl: 3 }}>
-        <IndicatorWeather title={'Indicator 4'} subtitle={'Unidad 4'} value={"3.21"} />
-      </Grid> */}
-      {renderIndicators()}
-
-      {/* Tabla */}
-      <Grid size={{ xs: 12, xl: 8 }}>
-        {/* Grid Anidado */}
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, xl: 3 }}>
-            <ControlWeather />
-          </Grid>
-          <Grid size={{ xs: 12, xl: 9 }}>
-            <TableWeather itemsIn={items}/>
-          </Grid>
+      {/* Manejo de errores */}
+      {error && (
+        <Grid size={{ xs: 12, xl: 12 }}>
+          <p style={{ color: 'red' }}>{error}</p>
         </Grid>
-      </Grid>
+      )}
 
+      {isLoading ? (
+        <Grid size={{ xs: 12, xl: 12 }}>
+          <p>Cargando datos...</p>
+        </Grid>
+      ) : (
+        <>
+          {renderIndicators()}
 
-      {/* Gráfico */}
-      <Grid size={{ xs: 12, xl: 4 }}>
-        <LineChartWeather />
-      </Grid>
+          {/* Tabla */}
+          <Grid size={{ xs: 12, xl: 8 }}>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, xl: 3 }}>
+                <ControlWeather 
+                  selectedVariable={selectedVariable} 
+                  onVariableChange={setSelectedVariable} 
+                />
+              </Grid>
+              <Grid size={{ xs: 12, xl: 9 }}>
+                <TableWeather itemsIn={items} />
+              </Grid>
+            </Grid>
+          </Grid>
 
+          {/* Gráfico */}
+          <Grid size={{ xs: 12, xl: 4 }}>
+            <LineChartWeather data={items} variable={selectedVariable} />
+          </Grid>
+        </>
+      )}
     </Grid>
-  )
+  );
 }
 
-export default App
+export default App;

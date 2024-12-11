@@ -9,9 +9,9 @@ import Item from './interface/Item';
 import { useEffect, useState } from 'react';
 
 interface Indicator {
-  title?: String;
-  subtitle?: String;
-  value?: String;
+  title?: string;
+  subtitle?: string;
+  value?: string;
 }
 
 function App() {
@@ -23,6 +23,39 @@ function App() {
   let [selectedVariable, setSelectedVariable] = useState<string>("humidity");
   let [isLoading, setIsLoading] = useState(false);
   let [error, setError] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Funcion para el saludo
+  const getGreeting = () => {
+    const hour = currentTime.getHours();
+    if (hour >= 5 && hour < 12) return "Buenos días";
+    if (hour >= 12 && hour < 19) return "Buenas tardes";
+    return "Buenas noches";
+  };
+
+  //Funcion para convertir Kelvin a Celsius
+  const kelvinToCelsius = (kelvin: string): string => {
+    if (!kelvin) return '';
+    const celsius = parseFloat(kelvin) - 273.15;
+    return celsius.toFixed(1);
+  };
+
+  const formatDate = (date: Date) => {
+    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    return `${days[date.getDay()]}, ${date.getDate()} de ${months[date.getMonth()]} de ${date.getFullYear()}`;
+  };
+
+  // Actualizar tiempo
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   {/* Hook: useEffect */ }
   useEffect(() => {
@@ -54,27 +87,31 @@ function App() {
         let dataToIndicators: Indicator[] = [];
         let dataToItems: Item[] = [];
 
+        {/* 
+            Análisis, extracción y almacenamiento del contenido del XML 
+            en el arreglo de resultados
+        */}
+        //Indicadores
         let name = xml.getElementsByTagName("name")[0].innerHTML || ""
-        dataToIndicators.push({ "title": "Location", "subtitle": "City", "value": name })
+        dataToIndicators.push({ "title": "Ciudad", "value": name });
 
         let location = xml.getElementsByTagName("location")[1]
 
         let latitude = location.getAttribute("latitude") || ""
-        dataToIndicators.push({ "title": "Location", "subtitle": "Latitude", "value": latitude })
+        dataToIndicators.push({ "title": "Latitud", "value": latitude });
 
         let longitude = location.getAttribute("longitude") || ""
-        dataToIndicators.push({ "title": "Location", "subtitle": "Longitude", "value": longitude })
+        dataToIndicators.push({ "title": "Longitud", "value": longitude });
 
         let altitude = location.getAttribute("altitude") || ""
-        dataToIndicators.push({ "title": "Location", "subtitle": "Altitude", "value": altitude })
+        dataToIndicators.push({ "title": "Altitud", "value": altitude });
         
-        //Etiqueta time
+        //Extracción de atributos
         let times = xml.getElementsByTagName("time");
 
         for (let i=0; i<times.length; i++){
           let time = times[i];
 
-          //Extracción de atributos
           const dateStart = time.getAttribute("from")?.split("T")[1] || "";
           const dateEnd = time.getAttribute("to")?.split("T")[1] || "";
 
@@ -86,14 +123,55 @@ function App() {
 
           const clouds = time.getElementsByTagName("clouds")[0];
           const all = clouds.getAttribute("all") || "";
+          const cloudDescription = time.getElementsByTagName("clouds")[0]?.getAttribute("name") || "";
+
+          const temperature = time.getElementsByTagName("temperature")[0]?.getAttribute("value") || "";
+          const temperatureMin = time.getElementsByTagName("temperature")[0]?.getAttribute("min") || "";
+          const temperatureMax = time.getElementsByTagName("temperature")[0]?.getAttribute("max") || "";
+
+          const windSpeed = time.getElementsByTagName("windSpeed")[0]?.getAttribute("mps") || "";
+          const windGust = time.getElementsByTagName("windGust")[0]?.getAttribute("gust") || "";
+          const windDirection = time.getElementsByTagName("windDirection")[0]?.getAttribute("name") || "";
+          
+          const pressure = time.getElementsByTagName("pressure")[0]?.getAttribute("value") || "";
 
           dataToItems.push({
             dateStart,
             dateEnd,
             precipitation: probability,
             humidity: value,
-            clouds: all
-          });
+            clouds: all,
+            cloudDescription,
+            temperature: kelvinToCelsius(temperature),
+            temperatureMin: kelvinToCelsius(temperatureMin),
+            temperatureMax: kelvinToCelsius(temperatureMax),
+            windSpeed,
+            windGust,
+            windDirection,
+            pressure
+        });
+        }
+
+        // Indicadores de temperatura, viento y presión 
+        if (times.length > 0) {
+          const firstTime = times[0];
+
+          const temperature = firstTime.getElementsByTagName("temperature")[0]?.getAttribute("value") || "";
+          const temperatureMin = firstTime.getElementsByTagName("temperature")[0]?.getAttribute("min") || "";
+          const temperatureMax = firstTime.getElementsByTagName("temperature")[0]?.getAttribute("max") || "";
+          dataToIndicators.push({ "title": "Temperatura", "value": `${kelvinToCelsius(temperature)}°C` });
+          dataToIndicators.push({ "title": "Temperatura Mínima", "value": `${kelvinToCelsius(temperatureMin)}°C` });
+          dataToIndicators.push({ "title": "Temperatura Máxima", "value": `${kelvinToCelsius(temperatureMax)}°C` });
+
+          const windSpeed = firstTime.getElementsByTagName("windSpeed")[0]?.getAttribute("mps") || "";
+          const windGust = firstTime.getElementsByTagName("windGust")[0]?.getAttribute("gust") || "";
+          const windDirection = firstTime.getElementsByTagName("windDirection")[0]?.getAttribute("name") || "";
+          dataToIndicators.push({ "title": "Velocidad del viento", "value": windSpeed });
+          dataToIndicators.push({ "title": "Ráfaga de viento", "value": windGust });
+          dataToIndicators.push({ "title": "Dirección del viento", "value": windDirection });
+
+          const pressure = firstTime.getElementsByTagName("pressure")[0]?.getAttribute("value") || "";
+          dataToIndicators.push({ "title": "Presión", "value": pressure });
         }
 
         //6 primeros elementos
@@ -135,19 +213,33 @@ function App() {
   const handleSearch = () => {
     setSearchCity(city);
   }
-
   let renderIndicators = () => {
-    return indicators
-      .map(
-        (indicator, idx) => (
-          <Grid key={idx} size={{ xs: 12, xl: 3 }}>
-            <IndicatorWeather
-              title={indicator["title"]}
-              subtitle={indicator["subtitle"]}
-              value={indicator["value"]} />
-          </Grid>
-        )
+    const indicatorsWithGreeting = [
+      { 
+        "title": getGreeting(), 
+        "subtitle": currentTime.toLocaleTimeString('es-EC', { hour12: false }),
+        "value": formatDate(currentTime)
+      },
+      ...indicators //Añade los indicadores del clima después del saludo
+    ];
+  
+    return indicatorsWithGreeting.map(
+      (indicator, idx) => (
+        <Grid 
+          key={idx} 
+          size={{ 
+            xs: 12, 
+            xl: indicator.title === getGreeting() ? 12 : 3 
+          }}
+        >
+          <IndicatorWeather
+            title={indicator["title"]}
+            subtitle={indicator["subtitle"]}
+            value={indicator["value"]} 
+          />
+        </Grid>
       )
+    )
   }
 
   {/* JSX */ }

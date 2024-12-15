@@ -15,7 +15,7 @@ export default function IndicatorWeather(config: Indicator) {
             sx={{
               p: 2,
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
             }}
           >
             <Typography component="h2" variant="h6" 

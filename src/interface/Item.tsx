@@ -12,4 +12,5 @@ export default interface Item{
     windGust: String;
     windDirection: String;
     pressure: String;
+    visibility: string;
 }

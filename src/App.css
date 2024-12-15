@@ -5,6 +5,13 @@
   text-align: center;
 }
 
+body {
+  /* background-color:cornflowerblue; */
+  background: rgb(2,0,36);
+  background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%); 
+  padding-top: 80px;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -40,3 +47,231 @@
 .read-the-docs {
   color: #888;
 }
+
+/*Navbar*/
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 0;
+  background-color: #2e47e9;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.navbar ul {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  list-style: none;
+}
+
+.navbar ul li {
+  margin: 0 20px;
+}
+
+.navbar ul li a {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  padding: 5px 0;
+  transition: color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+  color: #f9917a;
+}
+
+.navbar ul li a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #f9917a;
+  transition: width 0.3s ease;
+}
+
+.navbar ul li a:hover::after {
+  width: 100%;
+}
+
+/*Inicio Contenedor*/
+.inicio-container {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 40px;
+}
+
+/*Barra de búsqueda*/
+
+.city-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.search-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+/*greeting card*/
+.greeting-card {
+  background: linear-gradient(145deg, #ffffff, #f0f2f5);
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 400px;
+  margin-left: 0;
+}
+
+.greeting-header {
+  margin-bottom: 20px;
+}
+
+.greeting-title {
+  font-size: 24px;
+  color: #1a237e;
+  margin: 0;
+}
+
+.greeting-city {
+  font-size: 18px;
+  color: #3949ab;
+  margin: 5px 0;
+}
+
+.greeting-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.greeting-time-section {
+  flex: 1;
+}
+
+.greeting-time {
+  font-size: 28px;
+  color: #283593;
+  margin: 0;
+  font-weight: bold;
+}
+
+.greeting-date {
+  font-size: 16px;
+  color: #5c6bc0;
+  margin: 5px 0 0 0;
+}
+
+.greeting-weather-section {
+  text-align: right;
+  flex: 1;
+}
+
+.temperature-current {
+  margin: 0;
+}
+
+.temperature-value {
+  font-size: 36px;
+  color: #1a237e;
+  font-weight: bold;
+}
+
+.temperature-unit {
+  font-size: 20px;
+  color: #3949ab;
+  margin-left: 5px;
+}
+
+.temperature-minmax {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 5px;
+}
+
+.temperature-min,
+.temperature-max {
+  font-size: 16px;
+  color: #5c6bc0;
+  margin: 0;
+}
+
+/*Indicator Wind*/
+.indicatorWind {
+  background-color: #f0f0f0; /* Cambia el color de fondo */
+  border: 1px solid #ccc; /* Agrega un borde */
+  padding: 16px; /* Espaciado interno */
+  border-radius: 8px; /* Bordes redondeados */
+  /*Color de fuente*/
+  color: #333;
+}
+
+/*Indicator Location*/
+.indicatorLocation {
+  background-color: #f0f0f0; /* Cambia el color de fondo */
+  border: 1px solid #ccc; /* Agrega un borde */
+  padding: 16px; /* Espaciado interno */
+  border-radius: 8px; /* Bordes redondeados */
+  /*Color de fuente*/
+  color: #333;
+}
+
+.indicatorAtmosphere {
+  background-color: #f0f0f0; /* Cambia el color de fondo */
+  border: 1px solid #ccc; /* Agrega un borde */
+  padding: 16px; /* Espaciado interno */
+  border-radius: 8px; /* Bordes redondeados */
+  /*Color de fuente*/
+  color: #333;
+}
+
+/*Indicator Atmosphere*/
+/* .atmosphere-indicator {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.atmosphere-title {
+  display: flex;
+  align-items: center;
+  color: #2c3e50;
+}
+
+.atmosphere-icon {
+  color: #3498db;
+}
+
+.atmosphere-label {
+  font-weight: 500;
+  color: #7f8c8d;
+}
+
+.atmosphere-value {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  font-weight: bold;
+} */

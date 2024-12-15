@@ -341,11 +341,20 @@ for (let i = 0; i < times.length; i++) {
       >
         <div className="inicio-container">
           <h1 className="title">Forecast Weather Ecuador</h1>
+          <p className="description">
+    Descubre el clima actual y pronósticos detallados de cualquier ciudad en Ecuador. Escribe el nombre de una ciudad en el buscador y presiona Enter para obtener información actualizada.
+  </p>
           <div className="search-container">
             <input
               type="text"
               value={city}
               onChange={handleInputChange}
+              /*permitir hacer enter*/
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
               placeholder="Ingrese la ciudad"
               className="city-input"
             />
@@ -373,8 +382,11 @@ for (let i = 0; i < times.length; i++) {
         </Grid>
       ) : (
         <>
+        <Grid item xs={12} xl={12} >
         {/*Fila de indicadores*/}
-        <Grid item container xs={12} spacing={2}>
+        <h2>Indicadores</h2>
+        <Grid item container xs={12} spacing={2} >
+          
           {/* GreetingCard */}
           <Grid item xs={12} sm={6} md={3}>
             <GreetingCard
@@ -394,7 +406,7 @@ for (let i = 0; i < times.length; i++) {
           </Grid>
 
           {/* IndicatorLocation */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={3} >
             <IndicatorLocation
               latitude={getWeatherData().latitude || 0}
               longitude={getWeatherData().longitude || 0}
@@ -410,6 +422,7 @@ for (let i = 0; i < times.length; i++) {
               visibility={getWeatherData().visibility || 0}
             />
           </Grid>
+        </Grid>
         </Grid>
 
           {/* Tabla */}

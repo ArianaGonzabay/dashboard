@@ -423,7 +423,6 @@ function App() {
               atmosféricas.
             </p>
             <Grid container spacing={2} className="indicators-container">
-            {renderIndicators()}
               <Grid item xs={12} sm={6} md={3}>
                 <GreetingCard
                   currentTime={currentTime}
@@ -431,26 +430,8 @@ function App() {
                   {...getWeatherData()}
                 />
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <IndicatorWind
-                  windSpeed={getWeatherData().windSpeed || 0}
-                  windGust={getWeatherData().windGust || 0}
-                  windDirection={getWeatherData().windDirection || "N/A"}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <IndicatorLocation
-                  latitude={getWeatherData().latitude || 0}
-                  longitude={getWeatherData().longitude || 0}
-                  altitude={getWeatherData().altitude || 0}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <IndicatorAtmosphere
-                  pressure={getWeatherData().pressure}
-                  humidity={getWeatherData().humidity}
-                  visibility={getWeatherData().visibility || 0}
-                />
+              <Grid item xs={12} sm={6} md={9} container spacing={2} wrap="wrap" justifyContent="center" alignItems="center">
+              {renderIndicators()}
               </Grid>
             </Grid>
           </Grid>

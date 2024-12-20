@@ -21,7 +21,7 @@ function App() {
   let [city, setCity] = useState<string>("Guayaquil");
   let [searchCity, setSearchCity] = useState<string>("Guayaquil");
   let [indicators, setIndicators] = useState<Indicator[]>([]);
-  let [owm, setOWM] = useState(localStorage.getItem("openWeatherMap"));
+  //let [owm, setOWM] = useState(localStorage.getItem("openWeatherMap"));
   let [items, setItems] = useState<Item[]>([]);
   let [selectedVariable, setSelectedVariable] = useState<string>("humidity");
   let [isLoading, setIsLoading] = useState(false);
@@ -89,7 +89,7 @@ function App() {
         */
         }
         //Indicadores
-        let name = xml.getElementsByTagName("name")[0].innerHTML || "";
+        //let name = xml.getElementsByTagName("name")[0].innerHTML || "";
 
         let location = xml.getElementsByTagName("location")[1];
 
@@ -423,6 +423,7 @@ function App() {
               atmosféricas.
             </p>
             <Grid container spacing={2} className="indicators-container">
+            {renderIndicators()}
               <Grid item xs={12} sm={6} md={3}>
                 <GreetingCard
                   currentTime={currentTime}

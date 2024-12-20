@@ -1,6 +1,5 @@
 import Grid from "@mui/material/Grid";
 import "./App.css";
-//import IndicatorWeather from "./components/IndicatorWeather";
 import TableWeather from "./components/TableWeather";
 import ControlWeather from "./components/ControlWeather";
 import LineChartWeather from "./components/LineChartWeather";
@@ -106,59 +105,59 @@ function App() {
         //Extracción de atributos
         const times = xml.getElementsByTagName("time");
 
-for (let i = 0; i < times.length; i++) {
-    let time = times[i];
+        for (let i = 0; i < times.length; i++) {
+          let time = times[i];
 
-    const dateStart = time.getAttribute("from")?.split("T")[1] || "";
-    const dateEnd = time.getAttribute("to")?.split("T")[1] || "";
+          const dateStart = time.getAttribute("from")?.split("T")[1] || "";
+          const dateEnd = time.getAttribute("to")?.split("T")[1] || "";
 
-    const precipitation = time.getElementsByTagName("precipitation")[0];
-    const probability = precipitation?.getAttribute("probability") || "";
+          const precipitation = time.getElementsByTagName("precipitation")[0];
+          const probability = precipitation?.getAttribute("probability") || "";
 
-    const humidity = time.getElementsByTagName("humidity")[0];
-    const humidityValue = humidity.getAttribute("value") || "";
+          const humidity = time.getElementsByTagName("humidity")[0];
+          const humidityValue = humidity.getAttribute("value") || "";
 
-    const clouds = time.getElementsByTagName("clouds")[0];
-    const all = clouds.getAttribute("all") || "";
-    const cloudDescription = clouds.getAttribute("value") || "";
+          const clouds = time.getElementsByTagName("clouds")[0];
+          const all = clouds.getAttribute("all") || "";
+          const cloudDescription = clouds.getAttribute("value") || "";
 
-    const temperature = time.getElementsByTagName("temperature")[0];
-    const tempValue = temperature.getAttribute("value") || "";
-    const tempMin = temperature.getAttribute("min") || "";
-    const tempMax = temperature.getAttribute("max") || "";
+          const temperature = time.getElementsByTagName("temperature")[0];
+          const tempValue = temperature.getAttribute("value") || "";
+          const tempMin = temperature.getAttribute("min") || "";
+          const tempMax = temperature.getAttribute("max") || "";
 
-    const windSpeed = time.getElementsByTagName("windSpeed")[0];
-    const windSpeedValue = windSpeed?.getAttribute("mps") || "";
-    
-    const windGust = time.getElementsByTagName("windGust")[0];
-    const windGustValue = windGust?.getAttribute("gust") || "";
-    
-    const windDirection = time.getElementsByTagName("windDirection")[0];
-    const windDirectionValue = windDirection?.getAttribute("name") || "";
+          const windSpeed = time.getElementsByTagName("windSpeed")[0];
+          const windSpeedValue = windSpeed?.getAttribute("mps") || "";
 
-    const pressure = time.getElementsByTagName("pressure")[0];
-    const pressureValue = pressure?.getAttribute("value") || "";
+          const windGust = time.getElementsByTagName("windGust")[0];
+          const windGustValue = windGust?.getAttribute("gust") || "";
 
-    const visibility = time.getElementsByTagName("visibility")[0];
-    const visibilityValue = visibility?.getAttribute("value") || "";
+          const windDirection = time.getElementsByTagName("windDirection")[0];
+          const windDirectionValue = windDirection?.getAttribute("name") || "";
 
-    dataToItems.push({
-        dateStart,
-        dateEnd,
-        precipitation: probability,
-        humidity: humidityValue,
-        clouds: all,
-        cloudDescription,
-        temperature: kelvinToCelsius(tempValue),
-        temperatureMin: kelvinToCelsius(tempMin),
-        temperatureMax: kelvinToCelsius(tempMax),
-        windSpeed: windSpeedValue,
-        windGust: windGustValue,
-        windDirection: windDirectionValue,
-        pressure: pressureValue,
-        visibility: visibilityValue,
-    });
-}
+          const pressure = time.getElementsByTagName("pressure")[0];
+          const pressureValue = pressure?.getAttribute("value") || "";
+
+          const visibility = time.getElementsByTagName("visibility")[0];
+          const visibilityValue = visibility?.getAttribute("value") || "";
+
+          dataToItems.push({
+            dateStart,
+            dateEnd,
+            precipitation: probability,
+            humidity: humidityValue,
+            clouds: all,
+            cloudDescription,
+            temperature: kelvinToCelsius(tempValue),
+            temperatureMin: kelvinToCelsius(tempMin),
+            temperatureMax: kelvinToCelsius(tempMax),
+            windSpeed: windSpeedValue,
+            windGust: windGustValue,
+            windDirection: windDirectionValue,
+            pressure: pressureValue,
+            visibility: visibilityValue,
+          });
+        }
 
         // Indicadores de temperatura, viento y presión
         if (times.length > 0) {
@@ -216,6 +215,33 @@ for (let i = 0; i < times.length; i++) {
               .getElementsByTagName("pressure")[0]
               ?.getAttribute("value") || "";
           dataToIndicators.push({ title: "Presión", value: pressure });
+          const humidity =
+            firstTime
+              .getElementsByTagName("humidity")[0]
+              ?.getAttribute("value") || "";
+          dataToIndicators.push({
+            title: "Humedad",
+            value: humidity,
+          });
+
+          const visibility =
+            firstTime
+              .getElementsByTagName("visibility")[0]
+              ?.getAttribute("value") || "0";
+          const visibilityValue = parseInt(visibility);
+          const visibilityInKm =
+            visibilityValue > 0
+              ? (visibilityValue / 1000).toFixed(1) + " km"
+              : "N/A";
+
+          dataToIndicators.push({
+            title: "Visibilidad",
+            value: visibilityInKm,
+          });
+
+          console.log("Visibility raw value:", visibility);
+          console.log("Visibility parsed:", visibilityValue);
+          console.log("Visibility in km:", visibilityInKm);
         }
 
         //6 primeros elementos
@@ -265,10 +291,10 @@ for (let i = 0; i < times.length; i++) {
           <IndicatorWind
             windSpeed={getWeatherData().windSpeed || 0}
             windGust={getWeatherData().windGust || 0}
-            windDirection={getWeatherData().windDirection || 'N/A'}
+            windDirection={getWeatherData().windDirection || "N/A"}
           />
         </Grid>
-  
+
         {/* Componente de Ubicación */}
         <Grid item xs={12} xl={3}>
           <IndicatorLocation
@@ -277,7 +303,7 @@ for (let i = 0; i < times.length; i++) {
             altitude={getWeatherData().altitude || 0}
           />
         </Grid>
-  
+
         {/* Indicador de condiciones atmosféricas */}
         <Grid item xs={12} sm={6} md={4}>
           <IndicatorAtmosphere
@@ -289,43 +315,47 @@ for (let i = 0; i < times.length; i++) {
       </>
     );
   };
-  
+
   const getWeatherData = () => {
     console.log("Todos los indicadores:", indicators);
-    
-    const temp = indicators.find(i => i.title === "Temperatura");
-    const tempMin = indicators.find(i => i.title === "Temperatura Mínima");
-    const tempMax = indicators.find(i => i.title === "Temperatura Máxima");
-    
+
+    const temp = indicators.find((i) => i.title === "Temperatura");
+    const tempMin = indicators.find((i) => i.title === "Temperatura Mínima");
+    const tempMax = indicators.find((i) => i.title === "Temperatura Máxima");
+
     console.log("Temperatura:", temp);
     console.log("Mínima:", tempMin);
     console.log("Máxima:", tempMax);
-    
-    const windSpeed = indicators.find(i => i.title === "Velocidad del viento");
-    const windGust = indicators.find(i => i.title === "Ráfaga de viento");
-    const windDirection = indicators.find(i => i.title === "Dirección del viento");
 
-    const latitude = indicators.find(i => i.title === "Latitud");
-    const longitude = indicators.find(i => i.title === "Longitud");
-    const altitude = indicators.find(i => i.title === "Altitud");
+    const windSpeed = indicators.find(
+      (i) => i.title === "Velocidad del viento"
+    );
+    const windGust = indicators.find((i) => i.title === "Ráfaga de viento");
+    const windDirection = indicators.find(
+      (i) => i.title === "Dirección del viento"
+    );
 
-    const pressure = indicators.find(i => i.title === "Presión");
-    const humidity = indicators.find(i => i.title === "Humedad");
-    const visibility = indicators.find(i => i.title === "Visibilidad");
+    const latitude = indicators.find((i) => i.title === "Latitud");
+    const longitude = indicators.find((i) => i.title === "Longitud");
+    const altitude = indicators.find((i) => i.title === "Altitud");
+
+    const pressure = indicators.find((i) => i.title === "Presión");
+    const humidity = indicators.find((i) => i.title === "Humedad");
+    const visibility = indicators.find((i) => i.title === "Visibilidad");
 
     return {
-      temperature: temp?.value?.replace('°C', '') || '',
-      temperatureMin: tempMin?.value?.replace('°C', '') || '',
-      temperatureMax: tempMax?.value?.replace('°C', '') || '',
-      windSpeed: parseFloat(windSpeed?.value || '0'),
-      windGust: parseFloat(windGust?.value || '0'),
-      windDirection: windDirection?.value || '',
-      latitude: parseFloat(latitude?.value || '0'),
-      longitude: parseFloat(longitude?.value || '0'),
-      altitude: parseFloat(altitude?.value || '0'),
-      humidity: parseFloat(humidity?.value || '0'),
-      visibility: parseFloat(visibility?.value || '0'),
-      pressure: parseFloat(pressure?.value || '0')
+      temperature: temp?.value?.replace("°C", "") || "",
+      temperatureMin: tempMin?.value?.replace("°C", "") || "",
+      temperatureMax: tempMax?.value?.replace("°C", "") || "",
+      windSpeed: parseFloat(windSpeed?.value || "0"),
+      windGust: parseFloat(windGust?.value || "0"),
+      windDirection: windDirection?.value || "",
+      latitude: parseFloat(latitude?.value || "0"),
+      longitude: parseFloat(longitude?.value || "0"),
+      altitude: parseFloat(altitude?.value || "0"),
+      humidity: parseFloat(humidity?.value || "0"),
+      visibility: parseFloat(visibility?.value || "0"),
+      pressure: parseFloat(pressure?.value || "0"),
     };
   };
   {
@@ -342,8 +372,10 @@ for (let i = 0; i < times.length; i++) {
         <div className="inicio-container">
           <h1 className="title">Forecast Weather Ecuador</h1>
           <p className="description">
-    Descubre el clima actual y pronósticos detallados de cualquier ciudad en Ecuador. Escribe el nombre de una ciudad en el buscador y presiona Enter para obtener información actualizada.
-  </p>
+            Descubre el clima actual y pronósticos detallados de cualquier
+            ciudad en Ecuador. Escribe el nombre de una ciudad en el buscador y
+            presiona Enter para obtener información actualizada.
+          </p>
           <div className="search-container">
             <input
               type="text"
@@ -371,85 +403,89 @@ for (let i = 0; i < times.length; i++) {
 
       {/* Manejo de errores */}
       {error && (
-  <Grid item xs={12} xl={12}>
+        <Grid item xs={12} xl={12}>
           <p style={{ color: "red" }}>{error}</p>
         </Grid>
       )}
 
       {isLoading ? (
-  <Grid item xs={12} xl={12}>
+        <Grid item xs={12}>
           <p>Cargando datos...</p>
         </Grid>
       ) : (
         <>
-        <Grid item xs={12} xl={12} >
-        {/*Fila de indicadores*/}
-        <h2>Indicadores</h2>
-        <Grid item container xs={12} spacing={2} >
-          
-          {/* GreetingCard */}
-          <Grid item xs={12} sm={6} md={3}>
-            <GreetingCard
-              currentTime={currentTime}
-              city={city}
-              {...getWeatherData()}
-            />
+          {/* Primera sección: Indicadores */}
+          <Grid item xs={12}>
+            <h2>Indicadores</h2>
+            <p className="description">
+              Resumen de las condiciones meteorológicas actuales, incluyendo
+              información sobre el tiempo, viento, ubicación y condiciones
+              atmosféricas.
+            </p>
+            <Grid container spacing={2} className="indicators-container">
+              <Grid item xs={12} sm={6} md={3}>
+                <GreetingCard
+                  currentTime={currentTime}
+                  city={city}
+                  {...getWeatherData()}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <IndicatorWind
+                  windSpeed={getWeatherData().windSpeed || 0}
+                  windGust={getWeatherData().windGust || 0}
+                  windDirection={getWeatherData().windDirection || "N/A"}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <IndicatorLocation
+                  latitude={getWeatherData().latitude || 0}
+                  longitude={getWeatherData().longitude || 0}
+                  altitude={getWeatherData().altitude || 0}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <IndicatorAtmosphere
+                  pressure={getWeatherData().pressure}
+                  humidity={getWeatherData().humidity}
+                  visibility={getWeatherData().visibility || 0}
+                />
+              </Grid>
+            </Grid>
           </Grid>
-
-          {/* IndicatorWind */}
-          <Grid item xs={12} sm={6} md={3}>
-            <IndicatorWind
-              windSpeed={getWeatherData().windSpeed || 0}
-              windGust={getWeatherData().windGust || 0}
-              windDirection={getWeatherData().windDirection || 'N/A'}
-            />
-          </Grid>
-
-          {/* IndicatorLocation */}
-          <Grid item xs={12} sm={6} md={3} >
-            <IndicatorLocation
-              latitude={getWeatherData().latitude || 0}
-              longitude={getWeatherData().longitude || 0}
-              altitude={getWeatherData().altitude || 0}
-            />
-          </Grid>
-
-          {/* IndicatorAtmosphere */}
-          <Grid item xs={12} sm={6} md={3}>
-            <IndicatorAtmosphere
-              pressure={getWeatherData().pressure}
-              humidity={getWeatherData().humidity}
-              visibility={getWeatherData().visibility || 0}
-            />
-          </Grid>
-        </Grid>
-        </Grid>
-
-          {/* Tabla */}
-          <Grid item container xs={12} spacing={2}>
-          <Grid item xs={12} xl={8}>
+          {/* Segunda sección: Variables y Gráfico */}
+          <Grid item xs={12}>
+            <h2>Variables Meteorológicas y Gráfico</h2>
+            <p className="description">
+              Visualización gráfica de las variables meteorológicas
+              seleccionadas a lo largo del tiempo. Seleccione una variable para
+              ver su comportamiento.
+            </p>
             <Grid container spacing={2}>
-              <Grid item xs={12} xl={3}>
+              <Grid item xs={12} md={4}>
                 <ControlWeather
                   selectedVariable={selectedVariable}
                   onVariableChange={setSelectedVariable}
                 />
               </Grid>
-              <Grid item xs={12} xl={9}>
-                <TableWeather itemsIn={items} />
+              <Grid item xs={12} md={8}>
+                <LineChartWeather data={items} variable={selectedVariable} />
               </Grid>
             </Grid>
           </Grid>
-
-          {/* Gráfico */}
-          <Grid item xs={12} xl={4}>
-            <LineChartWeather data={items} variable={selectedVariable} />
+          {/* Tercera sección: Tabla */}
+          <Grid item xs={12}>
+            <h2>Tabla de Datos</h2>
+            <p className="description">
+              Registro detallado de todas las mediciones meteorológicas
+              organizadas cronológicamente.
+            </p>
+            <TableWeather itemsIn={items} />
           </Grid>
-        </Grid>
-      </>
-    )}
-  </Grid>
-);
+        </>
+      )}
+    </Grid>
+  );
 }
 
 export default App;

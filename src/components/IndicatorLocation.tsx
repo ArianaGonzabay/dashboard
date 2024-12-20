@@ -13,7 +13,7 @@ const IndicatorLocation: React.FC<LocationProps> = ({ latitude, longitude, altit
     <Box className="indicatorLocation" sx={{ p: 2 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" className='greeting-title'>
             <LocationOnOutlined sx={{ mr: 1 }} />
             Ubicación
           </Typography>

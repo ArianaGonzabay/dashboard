@@ -3,12 +3,12 @@ import { LineChart } from '@mui/x-charts/LineChart';
 import Item from '../interface/Item';
 
 interface LineChartWeatherProps {
-    data: Item[]; // Arreglo de datos desde `App.tsx`
-    variable: string; // Variable seleccionada
+    data: Item[];
+    variable: string; 
   }
 
 export default function LineChartWeather({ data, variable }: LineChartWeatherProps) {
-    // Extrae datos según la variable seleccionada
+    
     const chartData = data.map(item => parseFloat((item[variable as keyof Item] as string) || '0'));
     const xLabels = data.map(item => item.dateStart);
   

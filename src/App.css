@@ -57,22 +57,37 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  padding: 1rem 0;
+  padding: 0.5rem 2rem;
   background-color: rgba(46, 71, 233, 0.8);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   z-index: 1000;
   backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.logo{
+  display: flex;
+  align-items: center;
+}
+
+.logo img{
+  object-fit: contain;
 }
 
 .navbar ul {
   display: flex;
-  justify-content: center;
+  align-items: center;
   gap: 2rem;
   list-style: none;
+  padding-right: 5rem;
 }
 
 .navbar ul li {
-  margin: 0 20px;
+  display: flex;
+  gap: 2rem;
 }
 
 .navbar ul li a {
@@ -83,6 +98,7 @@ body {
   position: relative;
   padding: 5px 0;
   transition: color 0.3s ease;
+  white-space: nowrap;
 }
 
 .navbar ul li a:hover {
@@ -105,7 +121,6 @@ body {
 }
 
 /*Inicio Contenedor*/
-/*grid para titulo, descripcion y barra de busqueda*/
 .inicio-container {
   display: grid;
   gap: 20px;
@@ -149,6 +164,13 @@ body {
   background-color: #4ecbf0;
 }
 
+.indicators-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 /*greeting card*/
 .greeting-card {
   background: linear-gradient(145deg, rgba(74, 108, 247, 0.2), rgba(30, 81, 140, 0.2));
@@ -158,6 +180,8 @@ body {
   max-width: 400px;
   margin-left: 0;
   border: 1px solid rgba(74, 108, 247, 0.3);
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .greeting-header {
@@ -233,8 +257,8 @@ body {
   margin: 0;
 }
 
-/*Indicator Wind*/
-.indicatorWind {
+/*Indicators*/
+.indicatorWind, .indicatorLocation, .indicatorAtmosphere{
   background: linear-gradient(145deg, rgba(74, 108, 247, 0.2), rgba(30, 81, 140, 0.2));
   border-radius: 15px;
   padding: 15px;
@@ -242,31 +266,24 @@ body {
   max-width: 400px;
   margin-left: 0;
   border: 1px solid rgba(74, 108, 247, 0.3);
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/*Indicator Location*/
-.indicatorLocation {
-  background: linear-gradient(145deg, rgba(74, 108, 247, 0.2), rgba(30, 81, 140, 0.2));
-  border-radius: 15px;
-  padding: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  max-width: 400px;
-  margin-left: 0;
-  border: 1px solid rgba(74, 108, 247, 0.3);
+.indicatorWind:hover, .indicatorAtmosphere:hover, .indicatorLocation:hover, .greeting-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  cursor: pointer;
+  background: linear-gradient(145deg, rgba(74, 108, 247, 0.3), rgba(30, 81, 140, 0.3));
 }
 
-.indicatorAtmosphere {
-  background: linear-gradient(145deg, rgba(74, 108, 247, 0.2), rgba(30, 81, 140, 0.2));
-  border-radius: 15px;
-  padding: 15px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  max-width: 400px;
-  margin-left: 0;
-  border: 1px solid rgba(74, 108, 247, 0.3);
-}
 
 /*variables*/
-
 .control-weather-container {
   background: linear-gradient(145deg, rgba(74, 108, 247, 0.2), rgba(30, 81, 140, 0.2));
   border-radius: 15px;

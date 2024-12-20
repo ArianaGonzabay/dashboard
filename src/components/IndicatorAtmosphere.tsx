@@ -17,7 +17,7 @@ const IndicatorAtmosphere: React.FC<AtmosphereProps> = ({
     <Box className="indicatorAtmosphere" sx={{ p: 2 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" className='greeting-title'>
             <CloudOutlined sx={{ mr: 1 }} />
             Condiciones Atmosféricas
           </Typography>
@@ -46,7 +46,7 @@ const IndicatorAtmosphere: React.FC<AtmosphereProps> = ({
             Visibilidad
           </Typography>
           <Typography variant="body1">
-            {visibility/1000} km
+            {visibility} km
           </Typography>
         </Grid>
       </Grid>

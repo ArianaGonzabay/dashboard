@@ -13,7 +13,7 @@ const IndicatorWind: React.FC<WindProps> = ({ windSpeed, windGust, windDirection
     <Box className="indicatorWind" sx={{ p: 2 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h6" component="div">
+          <Typography variant="h6" component="div" className='greeting-title'>
             <AirOutlined sx={{ mr: 1 }} />
             Viento
           </Typography>

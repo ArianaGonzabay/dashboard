@@ -6,6 +6,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import "../App.css";
 
 // Define props interface
 interface ControlWeatherProps {
@@ -42,7 +43,11 @@ export default function ControlWeather({
 
     // JSX
     return (
-        <Paper className="control-weather-container">
+        <Paper 
+  className="control-weather-container" 
+  elevation={0} 
+  sx={{ backgroundColor: 'transparent' }}
+>
             <Typography className="control-weather-title" mb={2} component="h3" variant="h6">
                 Variables Meteorológicas
             </Typography>

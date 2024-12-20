@@ -461,7 +461,7 @@ function App() {
               seleccionadas a lo largo del tiempo. Seleccione una variable para
               ver su comportamiento.
             </p>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} className="chart-container">
               <Grid item xs={12} md={4}>
                 <ControlWeather
                   selectedVariable={selectedVariable}

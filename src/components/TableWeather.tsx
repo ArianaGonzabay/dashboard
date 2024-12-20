@@ -23,6 +23,8 @@ export default function BasicTable(props: MyProp) {
     <TableContainer 
       component={Paper} 
       className="weather-data-table"
+      elevation={0}
+            sx={{ backgroundColor: 'transparent' }}
     >
       <Table>
         <TableHead>

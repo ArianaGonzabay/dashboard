@@ -19,7 +19,9 @@ export default function LineChartWeather({ data, variable }: LineChartWeatherPro
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          backgroundColor: 'transparent',
         }}
+        elevation={0}
       >
         <LineChart
           width={500}
